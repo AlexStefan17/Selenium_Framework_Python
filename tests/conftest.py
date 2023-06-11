@@ -8,13 +8,26 @@ from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
 
 
+def pytest_addoption(parser):
+    parser.addoption(
+        "--browser_name", action="store", default="chrome"
+    )
 
 @pytest.fixture(scope="class")
 def setup(request):
-    chrome_options = Options()
-    # chrome_options.add_experimental_option("detach", True)
-    service_obj = Service("/usr/bin/chromedriver")
-    driver = webdriver.Chrome(service=service_obj, options=chrome_options)
+    browser_name = request.config.getoption("browser_name")
+    if browser_name == "chrome":
+        chrome_options = Options()
+        # chrome_options.add_experimental_option("detach", True)
+        service_obj = Service("/usr/bin/chromedriver")
+        driver = webdriver.Chrome(service=service_obj, options=chrome_options)
+    elif browser_name == "firefox":
+        service_obj = Service("/usr/bin/geckodriver")
+        driver = webdriver.Firefox(service=service_obj)
+    elif browser_name == "ie":
+        #TODO IE invocation
+        pass
+
     driver.get("https://rahulshettyacademy.com/angularpractice/")
     driver.maximize_window()
     request.cls.driver = driver
