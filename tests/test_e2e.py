@@ -6,14 +6,15 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
+from pageObjects.HomePage import HomePage
 from utilities.BaseClass import BaseClass
 
 
 class TestOne(BaseClass):
 
     def test_e2e(self):
-
-        self.driver.find_element(By.CSS_SELECTOR, "a[href*='shop']").click()
+        homePage = HomePage(self.driver)
+        homePage.shopItems().click()
         cards = self.driver.find_elements(By.CSS_SELECTOR, ".card-title a")
         i = -1
         for card in cards:
