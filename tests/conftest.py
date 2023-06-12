@@ -19,7 +19,10 @@ def setup(request):
     if browser_name == "chrome":
         chrome_options = Options()
         # chrome_options.add_experimental_option("detach", True)
+        # linux
         service_obj = Service("/usr/bin/chromedriver")
+        # work
+        service_obj = Service("D:\ChromeDriver")
         driver = webdriver.Chrome(service=service_obj, options=chrome_options)
     elif browser_name == "firefox":
         service_obj = Service("/usr/bin/geckodriver")
