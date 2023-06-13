@@ -6,6 +6,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
+from pageObjects.CheckoutPage import CheckOutPage
 from pageObjects.HomePage import HomePage
 from utilities.BaseClass import BaseClass
 
@@ -16,7 +17,7 @@ class TestOne(BaseClass):
         homePage = HomePage(self.driver)
         homePage.shopItems().click()
         checkOutPage = CheckOutPage(self.driver)
-        cards = checkOutPage.getCardTitles().click()
+        cards = checkOutPage.getCardTitles()
         i = -1
         for card in cards:
             i = i + 1

@@ -22,7 +22,7 @@ def setup(request):
         # linux
         service_obj = Service("/usr/bin/chromedriver")
         # work
-        service_obj = Service("D:\ChromeDriver")
+        # service_obj = Service("D:\ChromeDriver")
         driver = webdriver.Chrome(service=service_obj, options=chrome_options)
     elif browser_name == "firefox":
         service_obj = Service("/usr/bin/geckodriver")
