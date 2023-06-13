@@ -15,19 +15,21 @@ class TestOne(BaseClass):
     def test_e2e(self):
         homePage = HomePage(self.driver)
         homePage.shopItems().click()
-        cards = self.driver.find_elements(By.CSS_SELECTOR, ".card-title a")
+        checkOutPage = CheckOutPage(self.driver)
+        cards = checkOutPage.getCardTitles().click()
         i = -1
         for card in cards:
             i = i + 1
             cardText = card.text
             if cardText == "Blackberry":
-                self.driver.find_elements(By.CSS_SELECTOR, ".card-footer button")[i].click()
+                checkOutPage.getCardFooter()[i].click()
 
         self.driver.find_element(By.CSS_SELECTOR, "a[class*='btn-primary']").click()
-        self.driver.find_element(By.XPATH, "//button[@class='btn btn-success']").click()
+        checkOutPage.checkOutItems().click()
         self.driver.find_element(By.ID, "country").send_keys("ind")
         element = WebDriverWait(self.driver, 10).until(
             EC.presence_of_element_located((By.LINK_TEXT, "India")))
+        # TODO POM
         self.driver.find_element(By.LINK_TEXT, "India").click()
         self.driver.find_element(By.XPATH, "//label[@for='checkbox2']").click()
         self.driver.find_element(By.XPATH, "//input[@class='btn btn-success btn-lg']").click()
