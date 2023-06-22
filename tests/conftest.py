@@ -6,7 +6,18 @@ from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
+
+from selenium.webdriver.chrome.service import Service as ChromiumService
+from webdriver_manager.chrome import ChromeDriverManager
+from webdriver_manager.core.utils import ChromeType
+
+from selenium.webdriver.firefox.service import Service as FirefoxService
+from webdriver_manager.firefox import GeckoDriverManager
+
+from selenium.webdriver.edge.service import Service as EdgeService
+from webdriver_manager.microsoft import EdgeChromiumDriverManager
 driver = None
+
 
 def pytest_addoption(parser):
     parser.addoption(
@@ -20,17 +31,23 @@ def setup(request):
     if browser_name == "chrome":
         chrome_options = Options()
         # chrome_options.add_experimental_option("detach", True)
+        chrome_options.add_argument("--window-size=1920,1080")
+        chrome_options.add_argument("--start-maximized")
+        chrome_options.add_argument('--headless')
         # linux
         # service_obj = Service("/usr/bin/chromedriver")
         # work
-        service_obj = Service("D:\ChromeDriver")
-        driver = webdriver.Chrome(service=service_obj, options=chrome_options)
+        # service_obj = Service("D:\ChromeDriver")
+        # driver = webdriver.Chrome(service=service_obj, options=chrome_options)
+        driver = webdriver.Chrome(service=ChromiumService(ChromeDriverManager(chrome_type=ChromeType.CHROMIUM).install()), options=chrome_options)
     elif browser_name == "firefox":
-        service_obj = Service("/usr/bin/geckodriver")
-        driver = webdriver.Firefox(service=service_obj)
+        firefox_options = Options()
+        firefox_options.add_experimental_option("detach", True)
+        # service_obj = Service("/usr/bin/geckodriver")
+        # driver = webdriver.Firefox(service=service_obj)
+        driver = webdriver.Firefox(service=FirefoxService(GeckoDriverManager().install()))
     elif browser_name == "ie":
-        #TODO IE invocation
-        pass
+        driver = webdriver.Edge(service=EdgeService(EdgeChromiumDriverManager().install()))
 
     driver.implicitly_wait(5)
     driver.get("https://rahulshettyacademy.com/angularpractice/")
@@ -39,7 +56,7 @@ def setup(request):
     yield
     driver.close()
 
-@pytest.mark.hookwrapper
+@pytest.hookimpl(hookwrapper=True)
 def pytest_runtest_makereport(item):
     """
         Extends the PyTest Plugin to take and embed screenshot in html report, whenever test fails.
@@ -63,14 +80,4 @@ def pytest_runtest_makereport(item):
 
 
 def _capture_screenshot(name):
-        driver.get_screenshot_as_file(name)
-
-
-
-
-
-
-
-
-
-
+    driver.get_screenshot_as_file(name)
